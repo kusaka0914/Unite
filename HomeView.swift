@@ -127,81 +127,83 @@ struct HomeView: View {
                     ForEach(users.filter { user in
                         currentUser.following.contains(user.id)
                     }.flatMap { $0.posts }.sorted(by: { $0.date > $1.date })) { post in
-                        VStack(alignment: .leading) {
-                            HStack {
-                                if let iconImageData = currentUser.iconImageData, let uiImage = UIImage(data: iconImageData) {
-                                    Image(uiImage: uiImage)
-                                        .resizable()
-                                        .frame(width: 32, height: 32)
-                                        .clipShape(Circle())
-                                } else {
-                                    Image(systemName: "person.circle")
-                                        .resizable()
-                                        .frame(width: 40, height: 40)
-                                }
-                                Text(currentUser.username)
-                                    .font(.headline)
-                                    .fontWeight(.bold)
-                                Spacer()
-                            }
-                            .padding()
-
-                            if !post.images.isEmpty {
-                                ForEach(post.images, id: \.self) { imageData in
-                                    if let uiImage = UIImage(data: imageData) {
-                                        Image(uiImage: uiImage)
-                                            .resizable()
-                                            .scaledToFit()
-                                            .frame(maxWidth: UIScreen.main.bounds.width) // 横幅をスマホの横幅に設定
-                                    }
-                                }
-                            } else {
-                                Rectangle()
-                                    .fill(Color.gray)
-                                    .frame(height: 300)
-                                    .overlay(Text("写真").foregroundColor(.white))
-                                    .padding()
-                            }
-
+                        if let postUser = users.first(where: { $0.posts.contains(where: { $0.id == post.id }) }) {
                             VStack(alignment: .leading) {
                                 HStack {
-                                    Button(action: {
-                                        if let index = currentUser.posts.firstIndex(where: { $0.id == post.id }) {
-                                            currentUser.posts[index].isGood.toggle()
-                                            currentUser.posts[index].goodCount += currentUser.posts[index].isGood ? 1 : -1
-                                            UserDefaultsHelper.shared.saveUser(currentUser)
-                                        }
-                                    }) {
-                                        Image("clap")
+                                    if let iconImageData = postUser.iconImageData, let uiImage = UIImage(data: iconImageData) {
+                                        Image(uiImage: uiImage)
                                             .resizable()
-                                            .frame(width: 24, height: 24)
-                                    }
-                                    Text("\(post.goodCount)")
-                                        .font(.subheadline)
-                                    Button(action: {
-                                        // コメントボタンのアクション
-                                    }) {
-                                        Image("comment")
+                                            .frame(width: 32, height: 32)
+                                            .clipShape(Circle())
+                                    } else {
+                                        Image(systemName: "person.circle")
                                             .resizable()
-                                            .frame(width: 24, height: 24)
+                                            .frame(width: 40, height: 40)
                                     }
+                                    Text(postUser.username)
+                                        .font(.headline)
+                                        .fontWeight(.bold)
                                     Spacer()
                                 }
+                                .padding()
 
-                                Text(post.text)
-                                    .padding(.bottom, 8)
+                                if !post.images.isEmpty {
+                                    ForEach(post.images, id: \.self) { imageData in
+                                        if let uiImage = UIImage(data: imageData) {
+                                            Image(uiImage: uiImage)
+                                                .resizable()
+                                                .scaledToFit()
+                                                .frame(maxWidth: UIScreen.main.bounds.width) // 横幅をスマホの横幅に設定
+                                        }
+                                    }
+                                } else {
+                                    Rectangle()
+                                        .fill(Color.gray)
+                                        .frame(height: 300)
+                                        .overlay(Text("写真").foregroundColor(.white))
+                                        .padding()
+                                }
 
-                                Text("コメントを見る")
-                                    .foregroundColor(.blue)
-                                    .padding(.bottom, 8)
+                                VStack(alignment: .leading) {
+                                    HStack {
+                                        Button(action: {
+                                            if let index = currentUser.posts.firstIndex(where: { $0.id == post.id }) {
+                                                currentUser.posts[index].isGood.toggle()
+                                                currentUser.posts[index].goodCount += currentUser.posts[index].isGood ? 1 : -1
+                                                UserDefaultsHelper.shared.saveUser(currentUser)
+                                            }
+                                        }) {
+                                            Image("clap")
+                                                .resizable()
+                                                .frame(width: 24, height: 24)
+                                        }
+                                        Text("\(post.goodCount)")
+                                            .font(.subheadline)
+                                        Button(action: {
+                                            // コメントボタンのアクション
+                                        }) {
+                                            Image("comment")
+                                                .resizable()
+                                                .frame(width: 24, height: 24)
+                                        }
+                                        Spacer()
+                                    }
 
-                                Text("投稿日: \(post.date.formatted())") // ここは適切な日付フォーマットに変更してください
-                                    .font(.subheadline)
-                                    .foregroundColor(.gray)
+                                    Text(post.text)
+                                        .padding(.bottom, 8)
+
+                                    Text("コメントを見る")
+                                        .foregroundColor(.blue)
+                                        .padding(.bottom, 8)
+
+                                    Text("投稿日: \(post.date.formatted())") // ここは適切な日付フォーマットに変更してください
+                                        .font(.subheadline)
+                                        .foregroundColor(.gray)
+                                }
+                                .padding()
                             }
-                            .padding()
+                            .id(post.id) // 各投稿にIDを設定
                         }
-                        .id(post.id) // 各投稿にIDを設定
                     }
                 }
                 .listStyle(PlainListStyle())
