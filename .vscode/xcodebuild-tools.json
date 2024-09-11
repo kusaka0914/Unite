@@ -1,0 +1,19 @@
+{
+    "variables": {
+        "SDK_VERSION": "16.1"
+    },
+    "sdk": "iphonesimulator${SDK_VERSION}",
+    "workspace": "MySNS.xcworkspace",
+    "scheme": "MySNSDebug",
+    "debugConfigurations": [
+        {
+            "name": "Simulator",
+            "cwd": "${buildPath}",
+            "program": "ios-sim",
+            "args": [
+                "launch", "MySNS.app/",
+                "--devicetypeid",  "com.apple.CoreSimulator.SimDeviceType.iPhone-14, ${SDK_VERSION}"
+            ]
+        }        
+    ]
+}
