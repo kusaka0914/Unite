@@ -8,15 +8,22 @@ struct NotificationListView: View {
     var body: some View {
         NavigationView {
             List {
-                ForEach(Array(user.notifications.reversed())) { notification in
-                    VStack(alignment: .leading) {
-                        Text(notification.message)
-                            .font(.headline)
-                        Text(notification.date, style: .date)
-                            .font(.subheadline)
-                            .foregroundColor(.gray)
+                if user.notifications.isEmpty {
+                    Text("通知がありません")
+                        .font(.headline)
+                        .foregroundColor(.gray)
+                        .padding(.vertical, 8)
+                } else {
+                    ForEach(Array(user.notifications.reversed())) { notification in
+                        VStack(alignment: .leading) {
+                            Text(notification.message)
+                                .font(.headline)
+                            Text(notification.date, style: .date)
+                                .font(.subheadline)
+                                .foregroundColor(.gray)
+                        }
+                        .padding(.vertical, 8)
                     }
-                    .padding(.vertical, 8)
                 }
             }
             .navigationTitle("通知")
@@ -28,11 +35,9 @@ struct NotificationListView: View {
                     .foregroundColor(.white)
                     .imageScale(.large)
             }.navigationDestination(isPresented: $isHomeViewActive) {
-                            HomeView(currentUser: $user) // 遷移先のビュー
-                                .navigationBarBackButtonHidden(true)
-                        }
-            
-        )
+                HomeView(currentUser: $user) // 遷移先のビュー
+                    .navigationBarBackButtonHidden(true)
+            })
         }
     }
 }

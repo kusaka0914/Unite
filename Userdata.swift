@@ -4,6 +4,9 @@ struct Post: Identifiable, Codable {
     var id: UUID
     var text: String
     var images: [Data]
+    var goodCount: Int = 0 // いいねの数
+    var isGood: Bool = false // いいねされているかどうか
+    var date: Date = Date()
 }
 
 struct User: Identifiable, Codable {
@@ -170,7 +173,7 @@ class UserDefaultsHelper {
             users[followerIndex].following.append(followee.id)
             users[followeeIndex].followers.append(follower.id)
 
-            let notification = Notification(id: UUID(), type: .follow, message: "\(follower.username)があなたをフォローしました", date: Date())
+            let notification = Notification(id: UUID(), type: .follow, message: "\(follower.username)があなたをフォローしました", date: Date(), isRead: false)
             users[followeeIndex].notifications.append(notification)            
             
             do {
@@ -191,6 +194,20 @@ class UserDefaultsHelper {
             users[followerIndex].following.removeAll { $0 == followee.id }
             users[followeeIndex].followers.removeAll { $0 == follower.id }
             
+            do {
+                let data = try JSONEncoder().encode(users)
+                UserDefaults.standard.set(data, forKey: userKey)
+            } catch {
+                print("Failed to encode users: \(error)")
+            }
+        }
+    }
+    
+    // 投稿を削除するメソッド
+    func deletePost(user: User, post: Post) {
+        var users = loadUser()
+        if let userIndex = users.firstIndex(where: { $0.id == user.id }) {
+            users[userIndex].posts.removeAll { $0.id == post.id }
             do {
                 let data = try JSONEncoder().encode(users)
                 UserDefaults.standard.set(data, forKey: userKey)

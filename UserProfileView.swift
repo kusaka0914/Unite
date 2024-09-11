@@ -249,7 +249,7 @@ struct UserProfileView: View {
         }
         .navigationDestination(isPresented: $isPostDetailViewActive) {
             if let selectedPost = selectedPost {
-                PostDetailView(user: $user, posts: $user.posts, selectedPost: $selectedPost)
+                PostDetailView(user: $user, currentUser: $user, posts: $user.posts, selectedPost: $selectedPost)
                 .navigationBarBackButtonHidden(true)
             }
         }

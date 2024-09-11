@@ -73,10 +73,14 @@ struct SearchView: View {
                         .frame(width: 24, height: 24)
                         .padding()
                     Spacer()
+                    NavigationLink(destination: CreatePostView(user: $user)
+                        .navigationBarBackButtonHidden(true)
+                    ) {
                     Image(systemName: "plus")
                         .resizable()
                         .frame(width: 24, height: 24)
                         .padding()
+                    }
                     Spacer()
                     NavigationLink(destination: UserProfileView(user: $user)
                         .navigationBarBackButtonHidden(true)

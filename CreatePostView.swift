@@ -90,10 +90,6 @@ struct NextView: View {
 
     var body: some View {
         VStack {
-            TextField("キャプションを入力", text: $postText)
-                .textFieldStyle(RoundedBorderTextFieldStyle())
-                .padding()
-
             if let image = image {
                 Image(uiImage: image)
                     .resizable()
@@ -101,7 +97,9 @@ struct NextView: View {
             } else {
                 Text("画像がありません")
             }
-
+            TextField("キャプションを入力", text: $postText)
+                .textFieldStyle(RoundedBorderTextFieldStyle())
+                .padding()
             Spacer()
 
             Button(action: {
@@ -125,7 +123,7 @@ struct NextView: View {
     private func savePost() {
         // 画像をDataに変換
         let imageData = image?.jpegData(compressionQuality: 1.0) ?? Data()
-        let newPost = Post(id: UUID(), text: postText, images: [imageData])
+        let newPost = Post(id: UUID(), text: postText, images: [imageData], date: Date())
         user.posts.append(newPost)
         
         // ユーザーを保存
