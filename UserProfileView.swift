@@ -14,6 +14,7 @@ struct UserProfileView: View {
     @State private var isPostDetailViewActive = false
     @State private var showLogoutAlert = false // ログアウトアラートの状態を追加
     @State private var isLoginViewActive = false // ログインビューの状態を追加
+    @State private var isCourseRegistrationViewActive = false // 履修科目ビューの状態を追加
     @State private var isLoggedIn = false // ログイン状態を追加
 
     var body: some View {
@@ -186,6 +187,28 @@ struct UserProfileView: View {
                         .padding(.leading)
                         .padding(.bottom,24)
                         
+                        HStack {
+                            Button(action: {
+                                isCourseRegistrationViewActive = true
+                            }) {
+                                Text("履修科目を見る")
+                                    .padding(.horizontal, 16)
+                                    .padding(.vertical, 8)
+                                    .foregroundColor(.white)
+                                    .overlay(
+                                        RoundedRectangle(cornerRadius: 10)
+                                            .stroke(Color.white, lineWidth: 1)
+                                    )
+                            }
+                            .navigationDestination(isPresented: $isCourseRegistrationViewActive) {
+                                CourseRegistrationView(user: $user, currentUser: $user)
+                                    .navigationBarBackButtonHidden(true)
+                            }
+                            Spacer()
+                        }
+                        .padding(.leading)
+                        .padding(.bottom,24)
+                        
                         if user.posts.count == 0 {
                             Text("投稿がありません")
                                 .padding(.leading, 16)
@@ -270,7 +293,7 @@ struct UserProfileView: View {
             }
         }
         .navigationDestination(isPresented: $isLoginViewActive) {
-            LoginView(isLoggedIn: $isLoggedIn, user: $user)
+            LoginView(isLoggedIn: $isLoginViewActive, user: $user)
                 .navigationBarBackButtonHidden(true)
         }
     }

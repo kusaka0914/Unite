@@ -36,8 +36,9 @@ struct User: Identifiable, Codable {
     var iconImageData: Data?
     var notifications: [Notification] = []
     var messages: [Message] = [] // メッセージの配列を追加
+    var courses: [Course] = [] // コースの配列を追加
     
-    init(id: UUID = UUID(), username: String, university: String, posts: [Post] = [], followers: [UUID] = [], following: [UUID] = [], accountname: String, faculty: String, department: String, club: String, bio: String, twitterHandle: String, email: String, stories: [Story] = [], iconImageData: Data? = nil, notifications: [Notification] = [], messages: [Message] = []) {
+    init(id: UUID = UUID(), username: String, university: String, posts: [Post] = [], followers: [UUID] = [], following: [UUID] = [], accountname: String, faculty: String, department: String, club: String, bio: String, twitterHandle: String, email: String, stories: [Story] = [], iconImageData: Data? = nil, notifications: [Notification] = [], messages: [Message] = [], courses: [Course] = []) {
         self.id = id
         self.username = username
         self.university = university
@@ -55,6 +56,7 @@ struct User: Identifiable, Codable {
         self.iconImageData = iconImageData
         self.notifications = notifications
         self.messages = messages
+        self.courses = courses
     }
     
     func isFollowing(user: User) -> Bool {
@@ -85,6 +87,7 @@ struct User: Identifiable, Codable {
         iconImageData = try container.decodeIfPresent(Data.self, forKey: .iconImageData)
         notifications = try container.decodeIfPresent([Notification].self, forKey: .notifications) ?? []
         messages = try container.decodeIfPresent([Message].self, forKey: .messages) ?? []
+        courses = try container.decodeIfPresent([Course].self, forKey: .courses) ?? []
     }
 }
 
