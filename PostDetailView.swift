@@ -88,7 +88,7 @@ struct PostDetailView: View {
                                     .padding(.bottom, 8)
 
                                 Text("コメントを見る")
-                                    .foregroundColor(.blue)
+                                    .foregroundColor(.gray)
                                     .padding(.bottom, 8)
 
                                 Text("投稿日: \(post.date.formatted())") // ここは適切な日付フォーマットに変更してください

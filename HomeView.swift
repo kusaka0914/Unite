@@ -13,6 +13,7 @@ struct HomeView: View {
     @State private var selectedPost: Post?
     @State private var isPostDetailViewActive = false
     @State private var showAlert = false
+    @State private var isAllMessageViewActive = false
 
     var body: some View {
         NavigationStack {
@@ -59,11 +60,15 @@ struct HomeView: View {
                                 .navigationBarBackButtonHidden(true)
                         }
                         Button(action: {
-                            // ダイレクトメッセージ画面に遷移するアクション
+                            isAllMessageViewActive = true
                         }) {
                             Image("DM")
                                 .resizable()
                                 .frame(width: 30, height: 30)
+                        }
+                        .navigationDestination(isPresented: $isAllMessageViewActive) {
+                            AllMessageView(currentUser: $currentUser) // 遷移先のビュー
+                                .navigationBarBackButtonHidden(true)
                         }
                     }.padding()
                 }
@@ -193,7 +198,7 @@ struct HomeView: View {
                                         .padding(.bottom, 8)
 
                                     Text("コメントを見る")
-                                        .foregroundColor(.blue)
+                                        .foregroundColor(.gray)
                                         .padding(.bottom, 8)
 
                                     Text("投稿日: \(post.date.formatted())") // ここは適切な日付フォーマットに変更してください

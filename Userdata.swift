@@ -9,6 +9,14 @@ struct Post: Identifiable, Codable {
     var date: Date = Date()
 }
 
+struct Message: Identifiable, Codable {
+    var id: UUID
+    var senderId: UUID
+    var receiverId: UUID
+    var text: String
+    var date: Date = Date()
+}
+
 struct User: Identifiable, Codable {
     var id: UUID
     var username: String
@@ -26,8 +34,9 @@ struct User: Identifiable, Codable {
     var stories: [Story] = [] // デフォルト値を設定
     var iconImageData: Data?
     var notifications: [Notification] = []
+    var messages: [Message] = [] // メッセージの配列を追加
     
-    init(id: UUID = UUID(), username: String, university: String, posts: [Post] = [], followers: [UUID] = [], following: [UUID] = [], accountname: String, faculty: String, department: String, club: String, bio: String, twitterHandle: String, email: String, stories: [Story] = [], iconImageData: Data? = nil, notifications: [Notification] = []) {
+    init(id: UUID = UUID(), username: String, university: String, posts: [Post] = [], followers: [UUID] = [], following: [UUID] = [], accountname: String, faculty: String, department: String, club: String, bio: String, twitterHandle: String, email: String, stories: [Story] = [], iconImageData: Data? = nil, notifications: [Notification] = [], messages: [Message] = []) {
         self.id = id
         self.username = username
         self.university = university
@@ -44,6 +53,7 @@ struct User: Identifiable, Codable {
         self.stories = stories
         self.iconImageData = iconImageData
         self.notifications = notifications
+        self.messages = messages
     }
     
     func isFollowing(user: User) -> Bool {
@@ -69,6 +79,7 @@ struct User: Identifiable, Codable {
         stories = try container.decodeIfPresent([Story].self, forKey: .stories) ?? []
         iconImageData = try container.decodeIfPresent(Data.self, forKey: .iconImageData)
         notifications = try container.decodeIfPresent([Notification].self, forKey: .notifications) ?? []
+        messages = try container.decodeIfPresent([Message].self, forKey: .messages) ?? []
     }
 }
 
@@ -208,6 +219,25 @@ class UserDefaultsHelper {
         var users = loadUser()
         if let userIndex = users.firstIndex(where: { $0.id == user.id }) {
             users[userIndex].posts.removeAll { $0.id == post.id }
+            do {
+                let data = try JSONEncoder().encode(users)
+                UserDefaults.standard.set(data, forKey: userKey)
+            } catch {
+                print("Failed to encode users: \(error)")
+            }
+        }
+    }
+    
+    // メッセージを送信するメソッド
+    func sendMessage(sender: User, receiver: User, text: String) {
+        var users = loadUser()
+        
+        if let senderIndex = users.firstIndex(where: { $0.id == sender.id }),
+           let receiverIndex = users.firstIndex(where: { $0.id == receiver.id }) {
+            let message = Message(id: UUID(), senderId: sender.id, receiverId: receiver.id, text: text, date: Date())
+            users[senderIndex].messages.append(message)
+            users[receiverIndex].messages.append(message)
+            
             do {
                 let data = try JSONEncoder().encode(users)
                 UserDefaults.standard.set(data, forKey: userKey)

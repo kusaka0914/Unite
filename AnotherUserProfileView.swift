@@ -11,6 +11,7 @@ struct AnotherUserProfileView: View {
     @State private var iconImage: UIImage? = nil // アイコン画像の状態を追加
     @State private var selectedPost: Post? = nil
     @State private var isPostDetailViewActive = false
+    @State private var isMessageViewActive = false // メッセージビューの状態を追加
 
     var body: some View {
         NavigationStack {
@@ -155,6 +156,22 @@ struct AnotherUserProfileView: View {
                                             .cornerRadius(5)
                                     }
                                 }
+                                
+                                // メッセージボタンを追加
+                                Button(action: {
+                                    isMessageViewActive = true
+                                }) {
+                                    Text("メッセージ")
+                                        .padding(.horizontal, 16)
+                                        .padding(.vertical, 8)
+                                        .background(Color.green)
+                                        .foregroundColor(.white)
+                                        .cornerRadius(5)
+                                }
+                                .navigationDestination(isPresented: $isMessageViewActive) {
+                                    MessageView(currentUser: $currentUser, otherUser: user)
+                                }
+                                
                                 Spacer()
                             }
                             .padding(.leading)
