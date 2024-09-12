@@ -9,7 +9,7 @@ import SwiftUI
 
 struct AllFollowingView: View {
     @Binding var user: User
-    @Environment(\.dismiss) var dismiss
+    @State private var isUserProfileViewActive = false
 
     var body: some View {
         List(user.following, id: \.self) { followingUserId in
@@ -29,13 +29,16 @@ struct AllFollowingView: View {
         }
         .navigationTitle("フォロー中")
         .navigationBarItems(leading: Button(action: {
-                dismiss()
+                isUserProfileViewActive = true
             }) {
                 Image(systemName: "chevron.left")
                     .foregroundColor(.white)
                     .imageScale(.large)
             }
         )
+        .navigationDestination(isPresented: $isUserProfileViewActive) {
+            UserProfileView(user: $user)
+        }
     }
 }
 

@@ -6,6 +6,7 @@ struct MessageView: View {
     @State private var messageText: String = ""
     @State private var messages: [Message] = []
     @FocusState private var isMessageFieldFocused: Bool // フォーカス状態を管理するプロパティを追加
+    @State private var isAllMessageViewActive = false
 
     var body: some View {
         VStack {
@@ -67,6 +68,18 @@ struct MessageView: View {
         }
         .navigationTitle(otherUser.username)
         .navigationBarTitleDisplayMode(.inline)
+        .navigationBarItems(leading: Button(action: {
+                isAllMessageViewActive = true
+            }) {
+                Image(systemName: "chevron.left")
+                    .foregroundColor(.white)
+                    .imageScale(.large)
+            }
+        )
+        .navigationDestination(isPresented: $isAllMessageViewActive) {
+            AllMessageView(currentUser: $currentUser)
+            .navigationBarBackButtonHidden(true)
+        }
     }
 
     private func loadMessages() {

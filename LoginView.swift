@@ -79,6 +79,7 @@ struct LoginView: View {
                 UserProfileView(
                     user: $user
                 )
+                .navigationBarBackButtonHidden(true)
             }
         }
     }

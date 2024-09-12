@@ -12,6 +12,9 @@ struct UserProfileView: View {
     @State private var iconImage: UIImage? = nil
     @State private var selectedPost: Post? = nil
     @State private var isPostDetailViewActive = false
+    @State private var showLogoutAlert = false // ログアウトアラートの状態を追加
+    @State private var isLoginViewActive = false // ログインビューの状態を追加
+    @State private var isLoggedIn = false // ログイン状態を追加
 
     var body: some View {
         NavigationStack {
@@ -34,9 +37,22 @@ struct UserProfileView: View {
                             .fontWeight(.bold)
                             .padding(.leading, 20)
                             .underline()
-                        Image("menu")
-                            .resizable()
-                            .frame(width: 36, height: 36)
+                        Button(action: {
+                            showLogoutAlert = true
+                        }) {
+                            Image("menu")
+                                .resizable()
+                                .frame(width: 36, height: 36)
+                        }
+                        .alert(isPresented: $showLogoutAlert) {
+                            Alert(
+                                title: Text("ログアウトしますか？"),
+                                primaryButton: .destructive(Text("ログアウト")) {
+                                    logout()
+                                },
+                                secondaryButton: .cancel(Text("キャンセル"))
+                            )
+                        }
                         Spacer()
                     }
                     .padding(.leading, 16)
@@ -205,7 +221,7 @@ struct UserProfileView: View {
                 }
                 .navigationDestination(isPresented: $isHomeViewActive) {
                     HomeView(currentUser: $user)
-                        .navigationBarBackButtonHidden(true)
+                    .navigationBarBackButtonHidden(true)
                 }
                 Spacer()
                 Button(action: {
@@ -253,6 +269,19 @@ struct UserProfileView: View {
                 .navigationBarBackButtonHidden(true)
             }
         }
+        .navigationDestination(isPresented: $isLoginViewActive) {
+            LoginView(isLoggedIn: $isLoggedIn, user: $user)
+                .navigationBarBackButtonHidden(true)
+        }
+    }
+
+    private func logout() {
+        // ログアウト処理をここに追加
+        // 例: UserDefaultsからユーザー情報を削除するなど
+        UserDefaults.standard.removeObject(forKey: "currentUser")
+        // ログイン画面に遷移するなどの処理を追加
+        isLoginViewActive = true
+        isLoggedIn = false
     }
 }
 

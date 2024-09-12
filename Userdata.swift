@@ -15,6 +15,7 @@ struct Message: Identifiable, Codable {
     var receiverId: UUID
     var text: String
     var date: Date = Date()
+    var isRead: Bool = false
 }
 
 struct User: Identifiable, Codable {
@@ -58,6 +59,10 @@ struct User: Identifiable, Codable {
     
     func isFollowing(user: User) -> Bool {
         return following.contains(user.id)
+    }
+
+    func unreadMessagesCount() -> Int {
+        return messages.filter { !$0.isRead && $0.receiverId == self.id }.count
     }
     
     // カスタムデコードロジックを追加

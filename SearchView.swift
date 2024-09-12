@@ -9,6 +9,7 @@ struct SearchView: View {
                 Text("Unite with New Friends")
                     .font(.title)
                     .fontWeight(.bold)
+                    .padding(.top, 40)
                 
                 HStack {
                     VStack {
@@ -94,13 +95,6 @@ struct SearchView: View {
                 .background(Color.black)
                 .foregroundColor(.white)
                 .padding(.trailing, 30)
-                .navigationBarItems(leading: Button(action: {
-                    dismiss()
-                }) {
-                    Image(systemName: "chevron.left")
-                        .foregroundColor(.white)
-                        .imageScale(.large)
-                })
             }
             .background(Color.black)
             .foregroundColor(.white)

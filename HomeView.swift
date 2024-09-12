@@ -62,9 +62,20 @@ struct HomeView: View {
                         Button(action: {
                             isAllMessageViewActive = true
                         }) {
-                            Image("DM")
-                                .resizable()
-                                .frame(width: 30, height: 30)
+                            ZStack {
+                                Image("DM")
+                                    .resizable()
+                                    .frame(width: 30, height: 30)
+                                if currentUser.unreadMessagesCount() > 0 {
+                                    Text("\(currentUser.unreadMessagesCount())")
+                                        .font(.caption2)
+                                        .foregroundColor(.white)
+                                        .padding(5)
+                                        .background(Color.red)
+                                        .clipShape(Circle())
+                                        .offset(x: 10, y: -10)
+                                }
+                            }
                         }
                         .navigationDestination(isPresented: $isAllMessageViewActive) {
                             AllMessageView(currentUser: $currentUser) // 遷移先のビュー
