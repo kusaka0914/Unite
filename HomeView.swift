@@ -14,6 +14,7 @@ struct HomeView: View {
     @State private var isPostDetailViewActive = false
     @State private var showAlert = false
     @State private var isAllMessageViewActive = false
+    @State private var isBulltinBoardViewActive = false
 
     var body: some View {
         NavigationStack {
@@ -30,6 +31,18 @@ struct HomeView: View {
                     .padding(.leading, 30)
                     Spacer()
                     HStack {
+                        Button(action: {
+                            isBulltinBoardViewActive = true
+                        }) {
+                            Image("shake")
+                                .resizable()
+                                .frame(width: 30, height: 30)
+                                .padding(.trailing, 10)
+                        }
+                        .navigationDestination(isPresented: $isBulltinBoardViewActive) {
+                            BulltinBoardView(currentUser: $currentUser) // 遷移先のビュー
+                                .navigationBarBackButtonHidden(true)
+                        }
                         Button(action: {
                             isNotificationViewActive = true
                             currentUser.notifications = currentUser.notifications.map { notification in

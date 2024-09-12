@@ -6,8 +6,8 @@ struct EditNameView: View {
 
     var body: some View {
         Form {
-            Section(header: Text("名前を編集")) {
-                TextField("名前", text: $username)
+            Section(header: Text("ユーザーネームを編集")) {
+                TextField("ユーザーネーム", text: $username)
                     .disableAutocorrection(true) // 自動修正を無効にする
             }
             Section {
@@ -17,11 +17,21 @@ struct EditNameView: View {
                 }) {
                     Text("保存")
                         .frame(maxWidth: .infinity, alignment: .center)
+                        .foregroundColor(.white)
                 }
             }
         }
-        .navigationTitle("所属学部編集")
+        .navigationTitle("ユーザーネーム")
+        
         .navigationBarTitleDisplayMode(.inline)
+        .navigationBarItems(leading: Button(action: {
+            self.presentationMode.wrappedValue.dismiss()
+        }) {
+            Image(systemName: "chevron.left")
+                    .foregroundColor(.white)
+                    .imageScale(.large)
+            }
+        )
     }
 
     private func saveName() {

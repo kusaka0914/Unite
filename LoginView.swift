@@ -97,7 +97,7 @@ struct LoginView: View {
             if let index = registeredEmails.firstIndex(of: email), registeredPasswords[index] == password {
                 isLoggedIn = true
                 loadUserData(email: email)
-                print("Logged in user: \(user)")
+                
                 // ログイン成功時の処理
             } else {
                 alertMessage = "メールアドレスまたはパスワードが間違っています。"

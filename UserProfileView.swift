@@ -26,8 +26,6 @@ struct UserProfileView: View {
                             .font(.title2)
                             .fontWeight(.bold)
                             .padding(.leading)
-                        Image("vector")
-                            .padding(.top, 8)
                         Spacer()
                         Spacer()
                         Spacer()
@@ -54,7 +52,6 @@ struct UserProfileView: View {
                                 secondaryButton: .cancel(Text("キャンセル"))
                             )
                         }
-                        Spacer()
                     }
                     .padding(.leading, 16)
                     .padding(.top, 16)

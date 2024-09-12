@@ -43,11 +43,21 @@ struct EditIconView: View {
                 }) {
                     Text("保存")
                         .frame(maxWidth: .infinity, alignment: .center)
+                        .foregroundColor(.white)
                 }
             }
         }
-        .navigationTitle("アイコン編集")
+        .navigationTitle("アイコン")
+        
         .navigationBarTitleDisplayMode(.inline)
+        .navigationBarItems(leading: Button(action: {
+            self.presentationMode.wrappedValue.dismiss()
+        }) {
+            Image(systemName: "chevron.left")
+                    .foregroundColor(.white)
+                    .imageScale(.large)
+            }
+        )
     }
 
     private func saveIcon() {

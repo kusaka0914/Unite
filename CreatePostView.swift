@@ -8,6 +8,7 @@ struct CreatePostView: View {
     @State var isCropViewShowing = false
     @State private var cropShapeType: Mantis.CropShapeType = .rect // トリミングの形を指定
     @State private var selectedItems: [PhotosPickerItem] = []
+    @State private var showAlert = false
     @Environment(\.presentationMode) var presentationMode
 
     var body: some View {
@@ -64,12 +65,15 @@ struct CreatePostView: View {
                 leading: Button(action: {
                     presentationMode.wrappedValue.dismiss()
                 }) {
-                    Text("戻る")
-                        .foregroundColor(.blue)
+                    Image(systemName: "chevron.left")
+                        .foregroundColor(.white)
+                        .imageScale(.large)
                 },
-                trailing: NavigationLink(destination: NextView(user: $user, image: $image)) {
+                trailing: NavigationLink(destination: NextView(user: $user, image: $image)
+                .navigationBarBackButtonHidden(true)
+                ) {
                     Text("次へ")
-                        .foregroundColor(.blue)
+                        .foregroundColor(.white)
                 }
             )
         }
@@ -86,7 +90,9 @@ struct NextView: View {
     @Binding var image: UIImage?
     @State private var postText: String = ""
     @State private var isUserProfileViewShowing = false
+    @State private var showAlert = false
     @Environment(\.presentationMode) var presentationMode
+    @Environment(\.dismiss) var dismiss
 
     var body: some View {
         VStack {
@@ -97,14 +103,33 @@ struct NextView: View {
             } else {
                 Text("画像がありません")
             }
-            TextField("キャプションを入力", text: $postText)
-                .textFieldStyle(RoundedBorderTextFieldStyle())
-                .padding()
+            ZStack(alignment: .topLeading) {
+                TextEditor(text: $postText)
+                    .frame(height: 150) // 高さを設定
+                    .padding(4)
+                    .background(Color.black)
+                    .cornerRadius(8)
+                    .overlay(
+                        RoundedRectangle(cornerRadius: 8)
+                            .stroke(Color.gray, lineWidth: 1)
+                    )
+                if postText.isEmpty {
+                    Text("キャプションを入力")
+                        .foregroundColor(.gray)
+                        .padding(.horizontal, 8)
+                        .padding(.vertical, 12)
+                }
+            }
+            .padding()
             Spacer()
 
             Button(action: {
-                savePost()
-                isUserProfileViewShowing = true
+                if image == nil {
+                    showAlert = true
+                } else {
+                    savePost()
+                    isUserProfileViewShowing = true
+                }
             }) {
                 Text("投稿する")
                     .foregroundColor(.white)
@@ -113,11 +138,21 @@ struct NextView: View {
                     .cornerRadius(8)
             }
             .padding()
+            .alert(isPresented: $showAlert) {
+                Alert(title: Text("エラー"), message: Text("画像が選択されていません"), dismissButton: .default(Text("OK")))
+            }
             .fullScreenCover(isPresented: $isUserProfileViewShowing) {
                 UserProfileView(user: $user)
             }
         }
         .navigationBarTitle("新規投稿", displayMode: .inline)
+        .navigationBarItems(leading: Button(action: {
+                dismiss()
+            }) {
+                Image(systemName: "chevron.left")
+                    .foregroundColor(.white)
+                    .imageScale(.large)
+            })
     }
 
     private func savePost() {

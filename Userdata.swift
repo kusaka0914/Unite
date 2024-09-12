@@ -8,12 +8,26 @@ struct Post: Identifiable, Codable {
     var isGood: Bool = false // いいねされているかどうか
     var date: Date = Date()
 }
+struct BulltinBoard: Identifiable, Codable, Equatable {
+    var id: UUID
+    var title: String
+    var text: String
+    var image: Data?
+    var date: Date = Date()
+    var userId: UUID
+    var isResolved: Bool = false // 解決済みかどうかを示すフラグ
+
+    static func == (lhs: BulltinBoard, rhs: BulltinBoard) -> Bool {
+        return lhs.id == rhs.id
+    }
+}
 
 struct Message: Identifiable, Codable {
     var id: UUID
     var senderId: UUID
     var receiverId: UUID
     var text: String
+    var image: Data?
     var date: Date = Date()
     var isRead: Bool = false
 }
@@ -96,6 +110,7 @@ class UserDefaultsHelper {
     
     private let userKey = "savedUsers"
     private let currentUserKey = "currentUser"
+    private let bulletinBoardKey = "bulletinBoard"
     
     private init() {}
     
@@ -138,7 +153,7 @@ class UserDefaultsHelper {
                 }
             }
             
-            print("Loaded users: \(users)") // デバッグプリント
+            
             return users
         } catch {
             print("Failed to decode users: \(error)")
@@ -192,7 +207,7 @@ class UserDefaultsHelper {
             users[followerIndex].following.append(followee.id)
             users[followeeIndex].followers.append(follower.id)
 
-            let notification = Notification(id: UUID(), type: .follow, message: "\(follower.username)があなたをフォローしました", date: Date(), isRead: false)
+            let notification = Notification(id: UUID(), type: .follow, message: "\(follower.username)があなたをフォローしました", date: Date(), senderId: follower.id, isRead: false)
             users[followeeIndex].notifications.append(notification)            
             
             do {
@@ -237,21 +252,61 @@ class UserDefaultsHelper {
     }
     
     // メッセージを送信するメソッド
-    func sendMessage(sender: User, receiver: User, text: String) {
+    func sendMessage(sender: User, receiver: User, text: String, image: Data? = nil) {
+    var users = loadUser()
+    
+    if let senderIndex = users.firstIndex(where: { $0.id == sender.id }),
+       let receiverIndex = users.firstIndex(where: { $0.id == receiver.id }) {
+        let message = Message(id: UUID(), senderId: sender.id, receiverId: receiver.id, text: text, image: image, date: Date())
+        users[senderIndex].messages.append(message)
+        users[receiverIndex].messages.append(message)
+        
+        do {
+            let data = try JSONEncoder().encode(users)
+            UserDefaults.standard.set(data, forKey: userKey)
+        } catch {
+            print("Failed to encode users: \(error)")
+        }
+    }
+}
+
+    // メッセージを削除するメソッド
+    func deleteMessage(_ message: Message) {
         var users = loadUser()
         
-        if let senderIndex = users.firstIndex(where: { $0.id == sender.id }),
-           let receiverIndex = users.firstIndex(where: { $0.id == receiver.id }) {
-            let message = Message(id: UUID(), senderId: sender.id, receiverId: receiver.id, text: text, date: Date())
-            users[senderIndex].messages.append(message)
-            users[receiverIndex].messages.append(message)
-            
-            do {
-                let data = try JSONEncoder().encode(users)
-                UserDefaults.standard.set(data, forKey: userKey)
-            } catch {
-                print("Failed to encode users: \(error)")
-            }
+        for i in 0..<users.count {
+            users[i].messages.removeAll { $0.id == message.id }
+        }
+        
+        do {
+            let data = try JSONEncoder().encode(users)
+            UserDefaults.standard.set(data, forKey: userKey)
+        } catch {
+            print("Failed to encode users: \(error)")
+        }
+    }
+
+    func saveBulletinBoardPosts(_ posts: [BulltinBoard]) {
+        do {
+            let data = try JSONEncoder().encode(posts)
+            UserDefaults.standard.set(data, forKey: bulletinBoardKey)
+        } catch {
+            print("Failed to encode bulletin board posts: \(error)")
+        }
+    }
+    
+    func loadBulletinBoardPosts() -> [BulltinBoard] {
+        guard let data = UserDefaults.standard.data(forKey: bulletinBoardKey) else {
+            print("No bulletin board posts data found in UserDefaults")
+            return []
+        }
+        do {
+            let posts = try JSONDecoder().decode([BulltinBoard].self, from: data)
+            print("Loaded bulletin board posts: \(posts)") // デバッグプリント
+            return posts
+        } catch {
+            print("Failed to decode bulletin board posts: \(error)")
+            return []
         }
     }
 }

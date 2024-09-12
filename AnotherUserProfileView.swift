@@ -141,8 +141,6 @@ struct AnotherUserProfileView: View {
                                     }
                                 } else {
                                     Button(action: {
-                                        print("自分: ",currentUser.username)
-                                        print("相手: ",user.username)
                                         UserDefaultsHelper.shared.followUser(follower: currentUser, followee: user)
                                         currentUser.following.append(user.id)
                                         user.followers.append(currentUser.id)
@@ -301,7 +299,7 @@ struct AnotherUserProfileView: View {
         if let updatedUser = UserDefaultsHelper.shared.loadUser().first(where: { $0.id == user.id }) {
             user = updatedUser
         }
-        print("リロード")
+        ("リロード")
     }
 }
 

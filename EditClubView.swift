@@ -6,8 +6,8 @@ struct EditClubView: View {
 
     var body: some View {
         Form {
-            Section(header: Text("学科を編集")) {
-                TextField("学科", text: $club)
+            Section(header: Text("サークルを編集")) {
+                TextField("サークル", text: $club)
                     .disableAutocorrection(true) // 自動修正を無効にする
             }
             Section {
@@ -17,11 +17,21 @@ struct EditClubView: View {
                 }) {
                     Text("保存")
                         .frame(maxWidth: .infinity, alignment: .center)
+                        .foregroundColor(.white)
                 }
             }
         }
-        .navigationTitle("所属学部編集")
+        .navigationTitle("サークル")
+        
         .navigationBarTitleDisplayMode(.inline)
+        .navigationBarItems(leading: Button(action: {
+            self.presentationMode.wrappedValue.dismiss()
+        }) {
+            Image(systemName: "chevron.left")
+                    .foregroundColor(.white)
+                    .imageScale(.large)
+            }
+        )
     }
 
     private func saveClub() {

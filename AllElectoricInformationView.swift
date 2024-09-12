@@ -8,7 +8,7 @@ struct AllElectoricInformationView: View {
     @State private var isUserProfileViewActive = false
     @Environment(\.dismiss) private var dismiss // dismiss環境変数を追加
     @State private var currentUser: User = User(username: "", university: "", posts: [], followers: [], following: [], accountname: "", faculty: "", department: "", club: "", bio: "", twitterHandle: "", email: "", stories: [], iconImageData: nil)
-    
+    @State private var showFollowButton = true
     var body: some View {
         NavigationStack {
             VStack {
@@ -20,7 +20,7 @@ struct AllElectoricInformationView: View {
                 ScrollView {
                     VStack(spacing: 0) {
                         ForEach($users) { user in
-                            UserRow(user: user, currentUser: $currentUser)
+                            UserRow(user: user, currentUser: $currentUser, showFollowButton: $showFollowButton)
                             Divider().background(Color.white)
                         }
                     }
@@ -61,6 +61,7 @@ struct AllElectoricInformationView: View {
 struct UserRow: View {
     @Binding var user: User
     @Binding var currentUser: User
+    @Binding var showFollowButton: Bool
     @State private var isUserProfileViewActive = false
     
     var body: some View {
@@ -85,6 +86,7 @@ struct UserRow: View {
                         .font(.subheadline)
                 }
                 Spacer()
+                if showFollowButton {
                 Button(action: {
                     if currentUser.isFollowing(user: user) {
                         UserDefaultsHelper.shared.unfollowUser(follower: currentUser, followee: user)
@@ -105,6 +107,7 @@ struct UserRow: View {
                         .background(currentUser.isFollowing(user: user) ? Color.gray : Color.blue)
                         .foregroundColor(.white)
                         .cornerRadius(5)
+                }
                 }
             }
             .padding()

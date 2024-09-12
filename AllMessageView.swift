@@ -26,21 +26,24 @@ struct AllMessageView: View {
                             if let iconImageData = user.iconImageData, let uiImage = UIImage(data: iconImageData) {
                                 Image(uiImage: uiImage)
                                     .resizable()
-                                    .frame(width: 32, height: 32)
+                                    .frame(width: 50, height: 50) // 縦幅を狭くする
                                     .clipShape(Circle())
                             } else {
                                 Image(systemName: "person.circle")
                                     .resizable()
-                                    .frame(width: 40, height: 40)
+                                    .frame(width: 50, height: 50) // 縦幅を狭くする
                             }
                             VStack(alignment: .leading) {
                                 Text(user.username)
                                     .font(.headline)
                                     .fontWeight(.bold)
+                                    .foregroundColor(.white)
                                 if let lastMessage = currentUser.messages.filter({ $0.receiverId == user.id || $0.senderId == user.id }).max(by: { $0.date < $1.date }) {
                                     Text(lastMessage.text)
                                         .font(.subheadline)
                                         .foregroundColor(.gray)
+                                        .lineLimit(1) // 1行に制限
+                                        .truncationMode(.tail) // 省略記号を末尾に設定
                                 }
                             }
                             Spacer()
@@ -53,9 +56,16 @@ struct AllMessageView: View {
                                     .clipShape(Circle())
                             }
                         }
+                        .padding(.vertical, 10) // 縦のパディングを調整
+                        .padding(.horizontal)
+                        .background(Color.black) // 背景色を黒に設定
+                        .cornerRadius(10) // 角を丸くする
                     }
+                    .listRowBackground(Color.clear) // 行の背景色を透明に設定
+                    .listRowInsets(EdgeInsets()) // 行のインセットを削除
                 }
             }
+            .listStyle(PlainListStyle()) // リストスタイルをプレーンに設定
             .navigationDestination(isPresented: $isMessageViewActive) {
                 if let selectedUser = selectedUser {
                     MessageView(currentUser: $currentUser, otherUser: selectedUser)

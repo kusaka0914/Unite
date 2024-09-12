@@ -114,7 +114,7 @@ struct CreateStoryView: View {
         
         if let data = image.jpegData(compressionQuality: 1.0) {
             try? data.write(to: fileURL)
-            print("Image saved at: \(fileURL.path)")
+            
         }
         
         // テキストデータを保存
@@ -123,11 +123,11 @@ struct CreateStoryView: View {
         let encoder = JSONEncoder()
         if let textsData = try? encoder.encode(texts) {
             try? textsData.write(to: textsFileURL)
-            print("Texts saved at: \(textsFileURL.path)")
+            
             // テキストデータをデコードして出力
             if let decodedTexts = try? JSONDecoder().decode([DraggableText].self, from: textsData) {
                 for text in decodedTexts {
-                    print("Text: \(text.text), Position: \(text.position)")
+                    
                 }
             }
         }
@@ -190,7 +190,7 @@ struct DraggableTextView: View {
     private func saveTextPosition() {
         // ここでテキストの位置を保存するロジックを実装
         // 例えば、UserDefaultsやファイルに保存するなど
-        print("Text position saved: \(draggableText.position)")
+        
     }
 }
 

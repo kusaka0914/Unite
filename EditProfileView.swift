@@ -19,7 +19,8 @@ struct EditProfileView: View {
         
     var body: some View {
         VStack(alignment: .leading, spacing: 20) {
-            NavigationLink(destination: EditNameView(username: $user.username), isActive: $isEditNameViewActive) {
+            NavigationLink(destination: EditNameView(username: $user.username)
+            .navigationBarBackButtonHidden(true), isActive: $isEditNameViewActive) {
                 HStack {
                     Image(systemName: "person.fill")
                         .foregroundColor(.white)
@@ -37,7 +38,8 @@ struct EditProfileView: View {
                 }
             }
             
-            NavigationLink(destination: EditAccountNameView(accountname: $user.accountname), isActive: $isEditAccountNameViewActive) {
+            NavigationLink(destination: EditAccountNameView(accountname: $user.accountname)
+            .navigationBarBackButtonHidden(true), isActive: $isEditAccountNameViewActive) {
                 HStack {
                     Image(systemName: "at.circle.fill")
                         .foregroundColor(.white)
@@ -55,7 +57,8 @@ struct EditProfileView: View {
                 }
             }
             
-            NavigationLink(destination: EditFacultyView(faculty: $user.faculty), isActive: $isEditFacultyViewActive) {
+            NavigationLink(destination: EditFacultyView(faculty: $user.faculty)
+            .navigationBarBackButtonHidden(true), isActive: $isEditFacultyViewActive) {
                 HStack {
                     Image(systemName: "building.columns.fill")
                         .foregroundColor(.white)
@@ -73,7 +76,8 @@ struct EditProfileView: View {
                 }
             }
             
-            NavigationLink(destination: EditDepartmentView(department: $user.department), isActive: $isEditDepartmentViewActive) {
+            NavigationLink(destination: EditDepartmentView(department: $user.department, faculty: $user.faculty)
+            .navigationBarBackButtonHidden(true), isActive: $isEditDepartmentViewActive) {
                 HStack {
                     Image(systemName: "graduationcap.fill")
                         .foregroundColor(.white)
@@ -91,7 +95,8 @@ struct EditProfileView: View {
                 }
             }
             
-            NavigationLink(destination: EditClubView(club: $user.club), isActive: $isEditClubViewActive) {
+            NavigationLink(destination: EditClubView(club: $user.club)
+            .navigationBarBackButtonHidden(true), isActive: $isEditClubViewActive) {
                 HStack {
                     Image(systemName: "person.3.fill")
                         .foregroundColor(.white)
@@ -109,7 +114,8 @@ struct EditProfileView: View {
                 }
             }
             
-            NavigationLink(destination: EditBioView(bio: $user.bio), isActive: $isEditBioViewActive) {
+            NavigationLink(destination: EditBioView(bio: $user.bio)
+            .navigationBarBackButtonHidden(true), isActive: $isEditBioViewActive) {
                 HStack {
                     Text("プロフィール")
                         .foregroundColor(.white)
@@ -125,7 +131,8 @@ struct EditProfileView: View {
                 }
             }
             
-            NavigationLink(destination: EditIconView(user: $user, iconImage: $iconImage), isActive: $isEditIconViewActive) {
+            NavigationLink(destination: EditIconView(user: $user, iconImage: $iconImage)
+            .navigationBarBackButtonHidden(true), isActive: $isEditIconViewActive) {
                 HStack {
                     Image(systemName: "photo")
                         .foregroundColor(.white)

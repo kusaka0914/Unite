@@ -17,11 +17,21 @@ struct EditBioView: View {
                 }) {
                     Text("保存")
                         .frame(maxWidth: .infinity, alignment: .center)
+                        .foregroundColor(.white)
                 }
             }
         }
-        .navigationTitle("所属学部編集")
+        .navigationTitle("自己紹介")
+        
         .navigationBarTitleDisplayMode(.inline)
+        .navigationBarItems(leading: Button(action: {
+            self.presentationMode.wrappedValue.dismiss()
+        }) {
+            Image(systemName: "chevron.left")
+                    .foregroundColor(.white)
+                    .imageScale(.large)
+            }
+        )
     }
 
     private func saveBio() {

@@ -167,7 +167,7 @@ struct FirstSettingView: View {
                         showAlert = true
                     } else {
                         UserDefaultsHelper.shared.saveUser(user)
-                        print("User to be saved: \(user)") // ここでユーザー情報をprint
+                        
                         showUserProfile = true
                     }
                 }) {
