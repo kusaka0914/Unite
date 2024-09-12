@@ -14,6 +14,7 @@ struct CourseRegistrationView: View {
     @State private var isUserProfileViewActive = false
     @State private var selectedCourse: Course? = nil
     @State private var isCourseEditViewActive = false
+    @Environment(\.presentationMode) var presentationMode
     
     var body: some View {
         NavigationView {
@@ -21,11 +22,11 @@ struct CourseRegistrationView: View {
                 let totalWidth = geometry.size.width
                 let remainingWidth = totalWidth - 20 // 20は左側の時間列の幅
                 let columnWidth = remainingWidth / 6 // 6列に分割
-                
+
                 VStack {
                     HStack {
                         Button(action: {
-                            isUserProfileViewActive = true
+                            presentationMode.wrappedValue.dismiss() // presentationModeを使用
                         }) {
                             Image(systemName: "chevron.left")
                                 .foregroundColor(.white)
@@ -33,10 +34,7 @@ struct CourseRegistrationView: View {
                                 .padding(.leading, 10)
                                 .padding(.trailing, 10)
                         }
-                        .navigationDestination(isPresented: $isUserProfileViewActive) {
-                            UserProfileView(user: $currentUser)
-                                .navigationBarHidden(true)
-                        }
+                        
                         Text("2024年2学期")
                             .font(.headline)
                             .padding(.trailing, 30)
@@ -74,8 +72,10 @@ struct CourseRegistrationView: View {
                                 ForEach(["月", "火", "水", "木", "金", "土"], id: \.self) { day in
                                     if let course = user.courses.first(where: { $0.day == day && $0.period == period }) {
                                         Button(action: {
-                                            selectedCourse = course
-                                            isCourseEditViewActive = true
+                                            if user.id == currentUser.id {
+                                                selectedCourse = course
+                                                isCourseEditViewActive = true
+                                            }
                                         }) {
                                             VStack {
                                                 Text(course.name)
@@ -91,8 +91,10 @@ struct CourseRegistrationView: View {
                                         }
                                     } else {
                                         Button(action: {
-                                            selectedCourse = Course(name: "", day: day, period: period, location: "")
-                                            isCourseEditViewActive = true
+                                            if user.id == currentUser.id {
+                                                selectedCourse = Course(name: "", day: day, period: period, location: "")
+                                                isCourseEditViewActive = true
+                                            }
                                         }) {
                                             Text("")
                                                 .frame(width: columnWidth, height: 80)
@@ -126,15 +128,36 @@ struct CourseEditView: View {
     var body: some View {
         VStack {
             TextField("コース名", text: $course.name)
+                .foregroundColor(.black)
+                .padding()
+                .background(Color.white)
+                .cornerRadius(10)
             TextField("場所", text: $course.location)
-            Button("保存") {
-                if let index = user.courses.firstIndex(where: { $0.id == course.id }) {
-                    user.courses[index] = course
-                } else {
-                    user.courses.append(course)
+                .foregroundColor(.black)
+                .padding()
+                .background(Color.white)
+                .cornerRadius(10)
+            HStack {
+                Button("保存") {
+                    if let index = user.courses.firstIndex(where: { $0.id == course.id }) {
+                        user.courses[index] = course
+                    } else {
+                        user.courses.append(course)
+                    }
+                    UserDefaultsHelper.shared.saveUser(user) // ユーザーデータを保存
+                    presentationMode.wrappedValue.dismiss() // CourseRegistrationViewに戻る
                 }
-                UserDefaultsHelper.shared.saveUser(user) // ユーザーデータを保存
-                presentationMode.wrappedValue.dismiss() // CourseRegistrationViewに戻る
+                .padding()
+                
+                Button("削除") {
+                    if let index = user.courses.firstIndex(where: { $0.id == course.id }) {
+                        user.courses.remove(at: index)
+                    }
+                    UserDefaultsHelper.shared.saveUser(user) // ユーザーデータを保存
+                    presentationMode.wrappedValue.dismiss() // CourseRegistrationViewに戻る
+                }
+                .padding()
+                .foregroundColor(.red)
             }
         }
         .padding()

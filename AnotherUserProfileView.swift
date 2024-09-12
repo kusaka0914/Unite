@@ -12,6 +12,7 @@ struct AnotherUserProfileView: View {
     @State private var selectedPost: Post? = nil
     @State private var isPostDetailViewActive = false
     @State private var isMessageViewActive = false // メッセージビューの状態を追加
+    @State private var isCourseRegistrationViewActive = false // 履修科目ビューの状態を追加
 
     var body: some View {
         NavigationStack {
@@ -172,6 +173,27 @@ struct AnotherUserProfileView: View {
                                     MessageView(currentUser: $currentUser, otherUser: user)
                                 }
                                 
+                                Spacer()
+                            }
+                            .padding(.leading)
+                            .padding(.bottom,24)
+                            
+                            // 履修科目を見るボタンを追加
+                            HStack {
+                                Button(action: {
+                                    isCourseRegistrationViewActive = true
+                                }) {
+                                    Text("履修科目を見る")
+                                        .padding(.horizontal, 16)
+                                        .padding(.vertical, 8)
+                                        .background(Color.orange)
+                                        .foregroundColor(.white)
+                                        .cornerRadius(5)
+                                }
+                                .navigationDestination(isPresented: $isCourseRegistrationViewActive) {
+                                    CourseRegistrationView(user: $user, currentUser: $currentUser)
+                                        .navigationBarBackButtonHidden(true)
+                                }
                                 Spacer()
                             }
                             .padding(.leading)

@@ -145,7 +145,7 @@ struct UserProfileView: View {
                             Spacer()
                         }
                         .padding(.leading, 16)
-                        .padding(.bottom, 16)
+                        .padding(.bottom, 8)
                         
                         if user.bio != "" {
                             HStack {
@@ -155,7 +155,7 @@ struct UserProfileView: View {
                                 Spacer()
                             }
                             .padding(.leading, 16)
-                            .padding(.bottom, 24)
+                            .padding(.bottom, 8)
                         }
                         
                         HStack {
@@ -185,7 +185,7 @@ struct UserProfileView: View {
                             Spacer()
                         }
                         .padding(.leading)
-                        .padding(.bottom,24)
+                        .padding(.bottom,8)
                         
                         HStack {
                             Button(action: {
